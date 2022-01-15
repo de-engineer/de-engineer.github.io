@@ -6,8 +6,8 @@ div.highlighter-rouge,
 figure.highlight {
   position: relative;
   margin-bottom: 1em;
-  background: $base00;
-  color: $base05;
+  background: #1D3461;
+  color: base05;
   font-family: $monospace;
   font-size: $type-size-6;
   line-height: 1.8;
@@ -70,23 +70,23 @@ figure.highlight {
   }
   .k {
     /* Keyword */
-    color: $base0e;
+    color: #2a9d8f;
   }
   .l {
     /* Literal */
-    color: $base09;
+    color:base09;
   }
   .n {
     /* Name */
-    color: $base05;
+    color: #9bf6ff;
   }
   .o {
     /* Operator */
-    color: $base0c;
+    color: yellow;
   }
   .p {
     /* Punctuation */
-    color: $base05;
+    color: #a2d2ff;
   }
   .cm {
     /* Comment.Multiline */
@@ -94,11 +94,11 @@ figure.highlight {
   }
   .cp {
     /* Comment.Preproc */
-    color: $base04;
+    color: #a0c4ff;
   }
   .c1 {
     /* Comment.Single */
-    color: $base04;
+    color: #8ecae6;
   }
   .cs {
     /* Comment.Special */
@@ -137,11 +137,11 @@ figure.highlight {
   }
   .kc {
     /* Keyword.Constant */
-    color: $base0e;
+    color: base0e;
   }
   .kd {
     /* Keyword.Declaration */
-    color: $base0e;
+    color: base0e;
   }
   .kn {
     /* Keyword.Namespace */
@@ -157,7 +157,7 @@ figure.highlight {
   }
   .kt {
     /* Keyword.Type */
-    color: $base0a;
+    color: #4cc9f0;
   }
   .ld {
     /* Literal.Date */
@@ -165,11 +165,11 @@ figure.highlight {
   }
   .m {
     /* Literal.Number */
-    color: $base09;
+    color: base09;
   }
   .s {
     /* Literal.String */
-    color: $base0b;
+    color: #abc4ff;
   }
   .na {
     /* Name.Attribute */
