@@ -3,18 +3,18 @@
    ========================================================================== */
 
 .archive {
-  margin-top: 1em;
+  margin-top: 0em;
   margin-bottom: 2em;
 
   @include breakpoint($large) {
     float: right;
     width: calc(100% - #{$right-sidebar-width-narrow});
-    padding-right: $right-sidebar-width-narrow;
+    padding-right: 5px;
   }
 
   @include breakpoint($x-large) {
     width: calc(100% - #{$right-sidebar-width});
-    padding-right: $right-sidebar-width;
+    padding-right: 18px;
   }
 }
 
@@ -24,6 +24,8 @@
   a {
     position: relative;
     z-index: 10;
+    color: #FF0000;
+    text-decoration: none;
   }
 
   a[rel="permalink"] {
@@ -136,6 +138,7 @@
    ========================================================================== */
 
 .archive {
+	margin-top: -1em;
   .grid__wrapper {
     /* extend grid elements to the right */
 
@@ -148,7 +151,9 @@
     }
   }
 }
-
+.archive__item-teaser{
+  display: none;
+}
 .grid__item {
   margin-bottom: 2em;
 
