@@ -15,9 +15,6 @@
       max-width: $x-large;
  }
 }
-.u-photo{
-  margin-top: 4em;
-}
 .page {
   @include breakpoint($large) {
       float: right;
