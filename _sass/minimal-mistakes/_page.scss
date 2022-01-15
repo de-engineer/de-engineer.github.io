@@ -15,12 +15,6 @@
       max-width: $x-large;
  }
 }
-<<<<<<< HEAD
-=======
-.u-photo{
-  margin-top: 1em;
-}
->>>>>>> 5545678918dfb016114c987eaf14d94a0baf32e8
 .page {
   @include breakpoint($large) {
       float: right;
