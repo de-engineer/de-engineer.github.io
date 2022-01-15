@@ -12,7 +12,7 @@
 
 # theme                  : "minimal-mistakes-jekyll"
 # remote_theme           : "mmistakes/minimal-mistakes"
-minimal_mistakes_skin    : "neon" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
+minimal_mistakes_skin    : "dark" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
 
 # Site Settings
 locale                   : "en-IN"
@@ -104,7 +104,7 @@ analytics:
 author:
   name             : "Mr. Rc"
   avatar           : "https://i.ibb.co/6W31BDG/skull.jpg" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "I love research!"
+  bio              : "I love to research!"
   location         : "India"
   email            : "cr.retsim@gmail.com"
   links:
