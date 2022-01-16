@@ -217,6 +217,8 @@
   }
 
   .visible-links {
+    font-family: "Ubuntu", sans-serif;
+    font-size: 23px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -243,7 +245,7 @@
         left: 0;
         bottom: 0;
         height: 4px;
-        background: $primary-color;
+        // background: $primary-color;
         width: 100%;
         -webkit-transition: $global-transition;
         transition: $global-transition;
