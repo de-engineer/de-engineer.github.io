@@ -9,9 +9,14 @@ math: false
 mermaid: false
 ---
 
+
 In this blog, we are going to have a look at some Windows API's Windows Registry Functions that will help us to manipulate the data inside the Windows Registry and as we know that our Environment Variables reside inside Windows Registry, so it will also help us to modify the Environment Variables in our system.
 
 The three functions that we are going to use are `RegCreateKey`, `RegSetValueEx`, `RegGetValueA`. This functions are from the `winreg.h` header file.
+
+**Table of contents:**
+* toc
+{:toc}
 
 # Some Important terms of The Windows Registry
 
