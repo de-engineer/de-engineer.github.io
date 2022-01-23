@@ -1,24 +1,21 @@
 ---
 title: Windows API - Basics of Virtual Memory Management API.
-author: Mr. Rc
+author_profile: true
 date: 2021-04-15 11:33:00 +0800
-categories: [Programming, Windows, Windows Internals, WinAPI]
-tags: [Windows, Windows API Series, Virtual Memory Management]
-math: false
-mermaid: false
+categories: [Programming, Windows Internals, WinAPI]
+tags: [Windows API Series, Virtual Memory Management]
 ---
 
-The Virtual Memory Manager in Windows (WMM) is available for user mode programs and can be used by the Win32 APIs to allocate memory and free them in the user space. 
-From this blog, I am going to start a series on Windows API where we will explore some windows API functions and play with them. In this particular blog I have covered two functions from the Windows Memory Management API which are `VirtualAlloc` and `VirtualFree` in deep. 
+# Introduction
+In this blog, I will teach you about some Windows API functions that allow us to perform Basic Virtual Memory Management. This API is provided by the Virtual Memory Manager (VMM) which is a part of the Windows Operating System itself. The VMM is responsible for the management of memory requests (allocation, freeing, securing and so on) made by the system or applications (processes). The VMM is actually a quite big topic and there's even a book dedicated to it - [What Makes It Page?: The Windows 7 (x64) Virtual Memory Manager](https://www.amazon.com/What-Makes-Page-Windows-Virtual/dp/1479114294). I will not focus into the depths of Paging and Virtual Memory because it would make this blog post huge and boring. If you want to learn about Virtual Memory and Paging, [Connor McGarr](https://twitter.com/33y0re) has written [this](https://connormcgarr.github.io/paging/) totally amazing blog on the topic, make sure to read it if you don't know about Virtual Memory already.    
+All the memory related functions in the Windows API resides under the `memoryapi.h` header file. In this particular post, I have covered the `VirtualAlloc` and `VirtualFree` functions in depth.    
 
 # 1. VirtualAlloc
-The `VirtualAlloc` function is used to allocate large private memory blocks and manage them in the user mode. The term Private memory blocks means that the memory region allocated by this function is private to the process that created it. By default, when we locate a memory block by using this function, it is initialized as zero.
+The `VirtualAlloc` function allows us to allocate private memory regions (blocks) and manage them, managing these regions means reserving, committing, changing their states (described later). The memory regions allocated by this function are called a "private memory regions" because they are only accessible (available) to the processes that allocate them. Memory regions allocated with this function are initialised to 0 by default.     
 
-Let's take a deeper look into this function and create a C program to use it.
-
-This is the function syntax according to the Microsoft documentation.
-
-```C
+#### Function signature
+This is the function signature of this function:
+```c
 LPVOID VirtualAlloc(
   LPVOID lpAddress,
   SIZE_T dwSize,
@@ -27,40 +24,30 @@ LPVOID VirtualAlloc(
 );
 ```
 
-If you look closely, you'll see that the function type is `LPVOID`, `LPVOID` is a pointer to a void object. `LPVOID` is just `typedef void* LPVOID` in the Windef.h. In simple words, `LPVOID` is an alias for `void *`. `LP` in `LPVOID` stands for long pointer.
+#### Arguments
+The return type of this function is `LPVOID`, which is basically a pointer to a void object. `LPVOID` is defined as `typedef void* LPVOID` in the `Windef.h`. In simple words, `LPVOID` is an alias for `void *`. `LP` in `LPVOID` stands for long pointer.    
 
-The first argument required for the function is `lpAddress`. It is used to specify the starting address of the memory region to allocate. If you don't know where to allocate memory, you can simply specify `NULL` and the system will decide where to allocate the memory. If the address that you specified is from a memory region that you don't have access to or if it's an invalid address to allocate the function will fail with ERROR_INVALID_ADDRESS error.
+**lpAddress**: This argument is used to specify the starting address of the memory region to allocate. This address is obtained from the return value of the previous call to this function. If we don't know where to allocate memory (as if we have not called this function previously), we can simply specify `NULL` and the system will decide where to allocate the memory. If this address is specified, the next argument (`dwSize`) will be ignored. If the address specified is from a memory region that is unaccessible or if it's an invalid address to allocate memory from, the function will fail with `ERROR_INVALID_ADDRESS` error.
 
-The second argument is `dwSize`. It is used to specify the size of the memory region that you want to allocate in *bytes*. If the `lpAddress` argument was specified as `NULL` then this value will be rounded up to the next page boundary.
+**dwSize**: This argument is used to specify the size of the memory region that we want to allocate in *bytes*. If the `lpAddress` argument was specified as `NULL` then this value will be [rounded up](https://en.wikipedia.org/wiki/Rounding) to the next page boundary.
 
-The third argument is `fAllocationType`. It is used to specify which type of memory allocation we need. Here are valid types as defined in the Microsoft documentation for `fAllocationType`: [Read here](https://www.notion.so/a8e846fdb9a346d38a6fdc116bbe61b4?v=4dd087bea5cd4bd0bda480e1df654438)
+**fAllocationType**: This argument is used to specify which type of memory allocation we need to use. Here are some valid types as defined in the Microsoft documentation:
 
-If you are confused about the hex digits which are written after every value, it is the actual value that will be translated to if you will use the value. If you use `MEM_COMMIT` it will be replaced with `0x00001000` and same with all other values.
+<img src="../images/fAllocationtypes-for-valloc.jpg" alt="Valid types for fAllocation" width="700px">{: .align-center}
 
-There are some other arguments also that can be used with this which are not so useful to us and not commonly used, if you want to read about them here:
+If you are confused about the hex values which are written after every value, they are basically the real value of the constants (i.e. `MEM_COMMIT`, `MEM_RESERVE`, etc). For example, if we use `MEM_COMMIT`, then it will be converted to `0x00001000` and same with all other values.
 
-[VirtualAlloc function (memoryapi.h) - Win32 apps](https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc#arguments)
+The types which are used rarely can be found [here](https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc#arguments).
 
-Our last argument is `flProtect`, this is used to specify the memory protection for the memory region that we are allocating.
-This are the values that we can specify in `flProtect`:
+**flProtect**: This argument is used to specify the memory protection that we want to use for the memory region that we are allocating.    
+are the supported parameters:
 
-- PAGE_NOACCESS
-- PAGE_GUARD
-- PAGE_NOCACHE
-- PAGE_WRITECOMBINE
+<img src="../images/some-memory-constants.png" alt="Some memory protection constants" width="700px">{: .align-center}
 
-This is how we can use this values:
-Note: Pages and memory regions words are used both referring to the memory region that is being allocated. As we're allocating Virtual memory, the memory regions will be created with their pages so I think they can be used interchangeably.
-
-[Some memory protection constants that can be used](https://www.notion.so/6e58799af3f941d681bd31a299aa8957)
-
-This are just a small number of examples of constants, you can read about many more here : 
-
-[Memory Protection Constants (WinNT.h) - Win32 apps](https://docs.microsoft.com/en-us/windows/win32/memory/memory-protection-constants)
+These are only the most used memory protection constants, the full list can be found [here](https://docs.microsoft.com/en-us/windows/win32/memory/memory-protection-constants).
 
 ## Return value
-
-If the function succeeds, it will return the starting address of the memory region that we specified or left `NULL`. If the function fails, it will return `NULL`.
+If the function succeeds, it will return the starting address of the memory region that was modified or allocated. If the function fails, it will return `NULL`.
 
 # 2. VirtualFree
 

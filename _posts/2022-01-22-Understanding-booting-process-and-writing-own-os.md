@@ -1,7 +1,6 @@
 ---
 title: Understanding the booting process of a computer and trying to write own operating system. 
 author_profile: true
-date: 2021-03-30 11:33:00 +0800
 categories: [Programming]
 tags: [Operating System Internals]
 ---
@@ -11,7 +10,7 @@ tags: [Operating System Internals]
 
 In this post, I am going to teach you how can you write your own Operating System. Although, it won’t be a fully-fleged Operating system (like the one you are using right now to read this post), but it will be a part of an Operating System that would be able to boot and it will give you a brief if not full understanding of the booting process of an Operating System. If you want to take this post seriously, I suggest you to take notes as there is a lot of information combined in this single post and can be uncomfortable to grasp at the same time.    
 If you find something difficult to understand from my explanation, you can always check the [resources](#resources) section to get a link to some alternative explanation of that topic.     
-I would start this post by Introducing you to some important components of the booting process of an Computer.
+I would start this post by introducing you to some important components of the booting process of an Computer.
 
 Table of contents:
 
@@ -20,7 +19,7 @@ Table of contents:
 
 # Firmware
 
-Unless you live under a rock, you might have heard of the term _"Firmware"_ several times, if you didn't then let me Introduce you to what a Firmware is.  
+Unless you live under a rock, you might have heard of the term _"Firmware"_ several times, if you didn't then let me introduce you to what a Firmware is.  
 The most well known example of firmwares are Basic Input/Output System (BIOS) and Unified Extensible Firmware Interface (UEFI).  
 The term itself is actually made up of two fancy words - **FIRM softWARE**. The word _"FIRM"_ means _"something that doesn't change or something that is not likely to change"_ and I know you are a smart person and you know what a software is. The word is nice and all but you are here to learn about the cool technical stuff so let me explain the techincal part of it.
 The firmware is stored inside non-volatile memory devices (devices which store sort of permanent data that doesn't change after a system restart) as instructions or data and it is the first thing that the CPU runs after the computer is powered on. Everything that we are learning in this blog post is specific to the BIOS firmware type. 
@@ -34,7 +33,7 @@ The booting process is something like this:
 - Computer is powered on.
 - The Central Processing Unit (CPU) runs the firmware from a specific Read-Only Memory (ROM) chip on your motherboard. The ROM from which your CPU is going to read the firmware depends upon the CPU your system is having.
 - The firmware detects several (but not all) hardware components connected to the system, such as network interfaces, keyboards, mouse, and so on, and does some error checking (also known as Power-On Self Test or POST) before activating them.
-- The firmware doesn't know what are the properties and details of the Operating System that is about to be going to be ran on the system, So, it transfers it's control to the Operating System and lets it do it's setup. It starts with searching through the available/connected storage devices or network interfaces in a pre-defined order (this order is known as the _"boot device sequence"_) and attempts to find a bootable disk. A bootable disk is a sector (A group of 512 bytes) which contains the magic number (bytes `0xAA, 0x55`). This magic number is also called as the _"boot signature"_. In this sector the byte at index 511 should be `0xAA` and the byte at index 512 should be `0x55`. This bootable disk is also called the Master Boot Record (MBR) and the program stored inside it is called the MBR bootloader or simply bootloader. Remember that this bootloader is a part of the Operating System, so technically, this is part of the process where we are actually booted in the Operating System. This whole process is done after the firmware calls the interrupt 0x19 (more about this later).
+- The firmware doesn't know what are the properties and details of the Operating System that is about to be going to be ran on the system, So, it transfers it's control to the Operating System and lets it do it's setup. It starts with searching through the available/connected storage devices or network interfaces in a pre-defined order (this order is known as the _"boot device sequence"_ or _"boot order"_) and attempts to find a bootable disk. A bootable disk is a sector (A group of 512 bytes) which contains the magic number (bytes `0xAA, 0x55`). This magic number is also called as the _"boot signature"_. In this sector the byte at index 511 should be `0xAA` and the byte at index 512 should be `0x55`. This bootable disk is also called the Master Boot Record (MBR) and the program stored inside it is called the MBR bootloader or simply bootloader. Remember that this bootloader is a part of the Operating System, so technically, this is part of the process where we are actually booted in the Operating System. This whole process is done after the firmware calls the interrupt 0x19 (more about this later).
 - After the firmware has found the bootloader, it loads it into the address `0x7c00` in the RAM and hands over the control to it.
 - Now, the bootloader can do whatever it is programmed to do, it may print a nihilist quote and tell you that your life has no meaning or it may just do nothing if it is programmed that way. Jokes aside, while it can be programmed to do anything, the main work it is supposed to be doing is performing several tasks that sets up the environment for the loading of next part (the kernel) of the OS. After performing some tasks like the initialisation of some registers, tables and so on. It reads the kernel from the disk and loads it somewhere in the RAM and handles over the control to it. 
 - Now, the kernel has the control over the system. Just like a bootloader, there is no pre-defined tasks for a kernel. Whatever it will do entirely depends upon what it has been programmed to do. For example, this can be seen in the Linux and Windows kernel, they are entirely different and what they will do is too entirely different but they will eventually start the User Interface and allow the user to have the control of the system. If you find this complex, here's an example - Just like everyone in your company does different stuff after they wake up - they may reply drink a cup of chai, they may go for a walk or do anything they want but their end goal is to reach the office on time and start working, a kernel too has the end goal of successfully loading the easy-to-use User Interface part of the OS to the user. Note that this is not the only work of the kernel in the OS, the kernel is an essential part of an OS and also has a lot to do after it has served you the nice UI.
@@ -256,7 +255,7 @@ The next thing we do is setting the correct values for registers.
 The first register we set up is the `bp` (`base pointer`) register to the address `0xffff` and then copy it to `sp` (`stack pointer`). Hold up!, Why this address?    
 In order to understand this, we first need to look at the memory layout of the system when it's in the booting process. Here is how it looks like:    
 
-<img src="../images/boot-memory-laout-1.png" alt="Memory layout of the system while booting" height="600px" width="400px" >{: .align-center} 
+<img src="../images/boot-memory-layout.png" alt="Memory layout of the system while booting" height="600px" width="400px" >{: .align-center} 
 **Memory layout of the system while booting.**
 {: .text-center}
 As you can see, the memory address that we are setting the base pointer is in the free memory that is after the memory address where our bootloader will be loaded (`0x7e00`) and before the other section of memory which starts at `0x9cf00`. We have set it to `0xffff` because if we had set it anywhere else (in some non-free memory) then it could possibly overwrite the other data that is around it as the stack increases it's size whenever data is pushed into it.    

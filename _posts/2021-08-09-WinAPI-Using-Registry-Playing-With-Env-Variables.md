@@ -1,7 +1,6 @@
 ---
 title: Windows API - Let's use the register to change our Environment!
 author_profile: true
-# author: Mr. Rc
 date: 2021-08-05 11:33:00 +0800
 categories: [Programming, Windows, Windows Internals, WinAPI, Windows Registry]
 tags: [Windows API Series]

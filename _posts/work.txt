@@ -1,3 +1,0 @@
-## work for tommorow
-re-make the diagram of the boot process.
-continue and complete writing about the boot process.
