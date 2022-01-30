@@ -8,8 +8,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lora:wght@500&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@500&display=swap');
-$global-font-family: 'Inconsolata', monospace; 
+@import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
+//$global-font-family: 'Rubik', sans-serif;
+// $global-font-family: 'Inconsolata', monospace; 
 
+
+$global-font-family: 'Rubik', sans-serif;
 $doc-font-size: 16 !default;
 
 /* paragraph indention */
