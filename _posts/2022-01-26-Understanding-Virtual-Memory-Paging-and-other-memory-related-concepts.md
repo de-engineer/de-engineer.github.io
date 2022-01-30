@@ -30,7 +30,7 @@ One of the main reasons of using virtual memory is that without the implementati
 # Paging
 Implementation of virtual memory by the Memory Management Unit is known as paging. Windows uses two types of paging which are known as **Disc Paging** and **Demand Paging** with clustering.    
 Virtual memory and physical memory both are divided into 4KB chunks (regions/parts), these chunks are called Pages (virtual memory chunks) and page frames (physical memory chunks). There are also large pages and huge pages but I won't talk about them in this blog post.    
-In disc paging, whenever there is not enough memory left in the physical memory (RAM), the virtual memory manager (explained later) moves pages from the RAM to special files called page files and this process of moving data from RAM to disc is called paging out memory or swapping. Moving pages from RAM to page files frees the RAM and this free memory can be used by new processes for their work. But, what happens to the paged out memory?    
+In disc paging, whenever there is not enough memory left in the physical memory (RAM), the memory manager (explained later) moves pages from the RAM to special files called page files and this process of moving data from RAM to disc is called paging out memory or swapping. Moving pages from RAM to page files frees the RAM and this free memory can be used by new processes for their work. But, what happens to the paged out memory?    
 Whenever some code (instruction) tries to access some data that is not in the physical memory but is paged out, the MMU generates a _page fault_ which is then handled by the OS, the OS takes that page from the disk and moves it back into the physical memory and restarts the instruction that wanted to access that memory. However, in clustering, instead of bringing back only the page that the fault requested, the memory manager also brings the pages surrounding the page that the fault requested.    
 In demand paging, whenever a process tries to allocate memory, the memory manager doesn't really allocate any memory but it still returns a pointer to some memory, which is actually not yet allocated, it gets allocated only when after it is accessed. Memory is not allocated -> Process accesses the non existent memory so page fault happens -> Windows allocates the memory and allows you to use it. This method is used because programs may allocate memory that they will never access or use and having this kind of pages in the memory will only waste the demand paging allows the system to save unused memory.    
 Each 64 bit process on Windows is allowed to use 256 TB of virtual memory addresses but this memory is divided into different sized regions, some of which is used by the system and some of it is allowed to be used by a process. Here is a diagram of the division:
@@ -44,11 +44,13 @@ A page can be in one of the three states:
 <img src="../images/page-states.png" width=900px>
 {: .align-center}
 
-# Virtual Memory Manager (VMM)
-All the management of the virtual memory and virtual addresses is done by the Virtual Memory Manager (VMM), which is a part of the Windows executive (kernel component). Here are the specific tasks of the VMM:
+# Memory Manager in Windows
+All the management of the virtual memory and virtual addresses is done by the Memory Manager, which is a part of the Windows executive (kernel component). Here are the specific tasks of the memory manager:
 - Translating a virtual memory address to a physical memory address.
 - Performing paging.
 - Allocation, Reservation, Freeing of virtual memory.
+- Handling page faults.
+- Managing page files.
 - Provides a userland API for allocation, reservation and freeing of virtual memory.
 
 # Memory-Mapped files
@@ -61,7 +63,7 @@ There are two types of memory-mapped files in Windows:
 There are pages that are shared with different processes and these pages are called shared pages. Shared pages are mostly used to share DLLs that most processes on Windows require which saves RAM as the system doesn't have to allocate same DLLs for each process, an example of this is `kernel32.dll`. Shared pages are essentially just _shared memory-mapped pages_ which are associated with DLLs or some other shareable data.
 
 # The Virtual Memory Management API
-This API is provided by the VMM. This API allows us to allocate, free, reserve and secure virtual memory pages. All the memory related functions in the Windows API reside under the `memoryapi.h` header file. In this particular post, we will see the `VirtualAlloc` and `VirtualFree` functions in depth.
+This API is provided by the memory manager of Windows. This API allows us to allocate, free, reserve and secure virtual memory pages. All the memory related functions in the Windows API reside under the `memoryapi.h` header file. In this particular post, we will see the `VirtualAlloc` and `VirtualFree` functions in depth.
 
 # 1. VirtualAlloc
 The `VirtualAlloc` function allows us to allocate private memory regions (blocks) and manage them, managing these regions means reserving, committing, changing their states (described later). The memory regions allocated by this function are called a "private memory regions" because they are only accessible (available) to the processes that allocate them. Memory regions allocated with this function are initialised to 0 by default.     
@@ -92,7 +94,7 @@ If you are confused about the hex values which are written after every value, th
 
 #### What does committing memory actually means?
 In the table of types and definitions, I have described `MEM_COMMIT` (which is used to commit virtual memory) terribly, so let me explain what committing memory actually means in a better way.    
-When you commit a region of memory using `VirtualAlloc`, due to the use of demand paging, the VMM doesn't actually allocate the memory region, neither on the physical disk nor in the Virtual Memory, but, when you try to access that memory address returned by the `VirtualAlloc` function, it causes a [page fault](https://www.geeksforgeeks.org/page-fault-handling-in-operating-system/) which causes a series of events and eventually the system allocates that memory region and serves it to you. So, until there's an access request to the memory, it's not allocated, there's just a guarantee by the VMM that there exists some memory and you can use them whenever you want.
+When you commit a region of memory using `VirtualAlloc`, due to the use of demand paging, the memory manager doesn't actually allocate the memory region, neither on the physical disk nor in the Virtual Memory, but, when you try to access that memory address returned by the `VirtualAlloc` function, it causes a [page fault](https://www.geeksforgeeks.org/page-fault-handling-in-operating-system/) which causes a series of events and eventually the system allocates that memory region and serves it to you. So, until there's an access request to the memory, it's not allocated, there's just a guarantee by the memory manager that there exists some memory and you can use them whenever you want.
 
 The types which are used rarely can be found [here](https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc#arguments).
 
@@ -184,7 +186,7 @@ Then we have specified the type of deallocation. As we are using `MEM_DECOMMIT`,
 ### Results #1
 As we are almost done with everything, let's compile and run the code. I suggest you to write the code by yourself and see the result. This is the that result that I got after I ran it:    
 ```console
-$ ./vmm-example.exe
+$ ./vmem-example.exe
 The base address of allocated memory is: 61fe18
 ```
 Cool, right?    
@@ -212,7 +214,7 @@ The `memmove` function is used to move data from one destination to other. The f
 Let's compile and run the code. This is the output that we'll get:
 
 ```console
-$ ./vmm-example.exe
+$ ./vmem-example.exe
 The base address of allocated memory is: 61fe18
 The data which is stored in the memory is 1337
 ```
