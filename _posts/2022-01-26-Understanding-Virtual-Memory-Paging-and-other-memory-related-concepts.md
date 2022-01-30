@@ -226,7 +226,6 @@ Thank you for reading!
 
 # Resources
 - [An awesome blog on virtual memory with explanation of the translation of virtual memory into physical memory](https://connormcgarr.github.io/paging/)
-- [Physical and Virtual Memory in Windows](https://answers.microsoft.com/en-us/windows/forum/all/physical-and-virtual-memory-in-windows-10/e36fb5bc-9ac8-49af-951c-e7d39b979938)
 - [Memory Management : Paging](https://medium.com/@esmerycornielle/memory-management-paging-43b85abe6d2f)
 - [x86 paging tutorial](https://cirosantilli.com/x86-paging)
 - [Why are programs not written using physical addresses? - stackoverflow](https://stackoverflow.com/questions/34072879/why-are-programs-not-written-using-physical-addresses)
