@@ -3,6 +3,7 @@ title: Understanding the booting process of a computer and trying to write own o
 author_profile: true
 categories: [Programming]
 tags: [Operating System Internals]
+excerpt: "There are a lot of things that happen under the hood when we start a computer, we will be exploring those as well as trying to a small part of an OS." 
 ---
 
 {:.no_toc}

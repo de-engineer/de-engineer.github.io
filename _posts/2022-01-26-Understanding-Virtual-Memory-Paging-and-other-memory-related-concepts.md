@@ -4,6 +4,7 @@ author_profile: true
 date: 2022-01-26 11:33:00 +0800
 categories: [Programming, WinAPI]
 tags: [Windows Internals series, Windows API series]
+excerpt: "Introduction to Virtual Memory, Paging and APIs that allow us to play with the virtual memory!"
 ---
 {:.no_toc}
 # Introduction
