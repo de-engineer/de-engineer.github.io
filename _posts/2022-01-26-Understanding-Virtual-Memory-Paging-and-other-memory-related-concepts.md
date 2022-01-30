@@ -1,9 +1,9 @@
 ---
-title: Windows API - Understanding Virtual Memory and exploring the Virtual Memory Management API.
+title: Windows API -  Exploring Virtual Memory and the Virtual Memory Management API.
 author_profile: true
 date: 2022-01-26 11:33:00 +0800
-categories: [Windows Internals]
-tags: [Windows Internals series]
+categories: [Programming, WinAPI]
+tags: [Windows Internals series, Windows API series]
 ---
 {:.no_toc}
 # Introduction
