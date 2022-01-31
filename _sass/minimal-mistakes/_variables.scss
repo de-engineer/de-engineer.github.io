@@ -10,11 +10,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@500&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap');
 //$global-font-family: 'Rubik', sans-serif;
 // $global-font-family: 'Inconsolata', monospace; 
 
 
 $global-font-family: 'Rubik', sans-serif;
+//$global-font-family: 'Source Sans Pro', sans-serif;
+
 $doc-font-size: 16 !default;
 
 /* paragraph indention */
@@ -138,7 +141,7 @@ $base03: #546e7a !default;
 $base04: #b2ccd6 !default;
 $base05: #eeffff !default;
 $base06: #eeffff !default;
-$base07: #ffffff !default;
+$base07: #db2f2f !default;
 $base08: #f07178 !default;
 $base09: #f78c6c !default;
 $base0a: #ffcb6b !default;

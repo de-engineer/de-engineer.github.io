@@ -105,7 +105,7 @@ These are the supported parameters:
 
 These are only the most used memory protection constants, the full list can be found [here](https://docs.microsoft.com/en-us/windows/win32/memory/memory-protection-constants).
 
-#### Return value
+## Return value
 If the function succeeds, it will return the starting address of the memory region that was modified or allocated. If the function fails, it will return `NULL`.
 
 # 2. VirtualFree
