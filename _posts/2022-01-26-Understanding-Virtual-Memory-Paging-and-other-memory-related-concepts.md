@@ -6,8 +6,6 @@ categories: [Programming, WinAPI]
 tags: [Windows Internals series, Windows API series]
 excerpt: "Introduction to Virtual Memory, Paging and APIs that allow us to play with the virtual memory!"
 ---
-{:.no_toc}
-# Introduction
 If you have ever explored Windows Internals or just the internal workings of an Operating System or Computer, you must have heard of the term "Virtual Memory" or "Paging" somewhere because these are some of the most important concepts of an Operating System and these are the concepts which we are going to explore in this blog post. Of course, I won't be able to cover the whole concepts but I'll try to give you basic understanding of every concept I will talk about but I will link to the resources that explain each concept in deep in the [resources](#resources) section.
 
 Table of contents:
@@ -46,7 +44,7 @@ A page can be in one of the three states:
 
 # Memory Manager in Windows
 All the management of the virtual memory and virtual addresses is done by the Memory Manager, which is a part of the Windows executive (kernel component). Here are the specific tasks of the memory manager:
-- Translating a virtual memory address to a physical memory address.
+- Telling the CPU how to translate a virtual memory address to a physical memory address.
 - Performing paging.
 - Allocation, Reservation, Freeing of virtual memory.
 - Handling page faults.

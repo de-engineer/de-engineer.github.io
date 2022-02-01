@@ -1,6 +1,5 @@
 ---
 title: Windows API - More on Virtual Memory.
-author: Mr. Rc
 date: 2021-04-18 11:33:00 +0800
 categories: [Programming, Windows, Windows Internals, WinAPI]
 tags: [Windows, Windows API Series, Virtual Memory Management]
@@ -8,15 +7,20 @@ math: false
 mermaid: false
 ---
 
-In this blog, we are going to have a look at some basic memory related things that we can do with the API functions that we learnt about in last blog post along with a new function `VirtualQuery`.
+In the last post, we learnt about basics of virtual memory management and we also learnt about two Windows API functions that allow us to allocate virtual memory (using `VirtualAlloc`) and free it (using `VirtualFree`).    
+In this post, we will continue our exploration of the Windows API functions that allow us to play with the virtual memory.   
+The particular function that we are going to learn about in this blog post is `VirtualQuery`.
 
-Before we start, I want to tell you about a function from Windows API which is `GetLastError` from Windows API. It is used to get the error code of the last error that occurred and we can get more information about the error code by looking at the error code list which is available here :
-[System Error Codes - Win32 apps](https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes#system-error-codes-1)
+# GetLastError
+Before we start, I would like to introduce you to a function from the Windows API, it is `GetLastError`. It is used to get **the _error code_ of the last error that occurred** and we can get more information about the error code by looking at the error code list which is available at msdn here :
+[System Error Codes - Win32 apps](https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes#system-error-codes-1)    
+We will be using this function in the code examples to see if there are any errors in our code.
 
 # 1. VirtualQuery
+---
+This function is used to query the information of a virtual memory region.
 
-This function is used to query the information of Virtual Memory allocated by `VirtualAlloc` and other Virtual Memory allocating functions.
-
+## Function signature
 This is the syntax for `VirtualQuery` function:
 ```c
 SIZE_T VirtualQuery(
@@ -25,13 +29,10 @@ SIZE_T VirtualQuery(
   SIZE_T                    dwLength
 );
 ```
-
-Forget about the function's type (`SIZE_T`) for now. Let's look at the arguments that are required...
-
-The first argument is `lpAddress`, which I guess you already know if you are reading this blog. If you don't know, then you can read the first part of Windows API series and learn about those things. 
-It's just the base address of Virtual Memory region that we allocated which is returned by `VirtualAlloc`.
-
-The second argument is `lpBuffer`. This is a pointer to a special struct that is already defined in `winint.h` and which looks like this:
+## Arguments
+The function's return type is `SIZE_T`, it's basically an `unsigned int`.    
+**lpAddress**: You might already know the use of this argument if you have read the part one of this blog, it's basically the base address of Virtual Memory region that we allocated which is returned by `VirtualAlloc`.    
+**lpBuffer**; This argument is a pointer to a struct that is defined in `winint.h`, it looks like this:
 ```c
 typedef struct _MEMORY_BASIC_INFORMATION {
   PVOID  BaseAddress;
@@ -44,31 +45,28 @@ typedef struct _MEMORY_BASIC_INFORMATION {
   DWORD  Type;
 } MEMORY_BASIC_INFORMATION, *PMEMORY_BASIC_INFORMATION;
 ```
-
-You can see this struct has some pretty useful members. We are going to use some of this to make a program that we are going to make in this blog. 
-To define this struct in our program, we can just write `MEMORY_BASIC_INFORMATION info;` and this will define a struct with all this members. After making this struct, we will just pass the memory address of this struct in the `lpBuffer` argument.
-
-The third argument is `dwLength`. If you have guessed this is the size of the memory region whose address we have to specify as the `lpAddress` argument, then sorry you're wrong and I was too when I was reading about it for the first time. It is actually the `sizeof` the struct that we are going to pass into it.
+I'll explain it's members later.    
+`dwLength`: This argument is the `size of` the struct from the last argument.
 
 ## Return value
+Instead of returning something the function just updates the struct that we had created.
 
-Instead of returning something the function just updates the struct that we created.
+# Examples
+As we have learnt enough about the function, let's take a look at some examples and see the function and it's working in action.
 
-## Code Example #1
-
-Now as we have done with understanding the things we are going to do, let's code stuff. We are going to make a program that will give us the information about a memory region. Let me show you the code first, then I will explain:
+## Example #1
+Now as we have done with understanding of the function, we'll see some code examples of the function. We are going to make a program that will give us the information about a memory region that we'll allocate using the functions that we learnt about in the last blog post. Let me show you the code first, then I will explain it:
 ```cpp
 #include <Windows.h>
 #include <stdio.h>
 
 int main()
 {
-	MEMORY_BASIC_INFORMATION info;
+	MEMORY_BASIC_INFORMATION info; // defining the struct
 	int ret;
-	int *vm = VirtualAlloc(NULL, 8, MEM_COMMIT, PAGE_READONLY);
-
+	int *vm = VirtualAlloc(NULL, 8, MEM_COMMIT, PAGE_READONLY); // 8 byte allocation.
 	ret = VirtualQuery(vm, &info, sizeof(info));
-	if (!ret)
+	if (!ret) // error checking.
 	{
 		printf("VirtualQuery failed\n");
 		printf("The error code for the last error was %d", GetLastError());
@@ -105,34 +103,34 @@ int main()
 		default:
 			break;
 	}
+	VirtualFree(vm, 8, MEM_DECOMMIT); // free the allocated memory.
 	return 0;
 }
 ```
 
-Don't get scared by this code, this is actually so self-explanatory. If you have looked into the code, you have probably seen that I have used `Windows.h` instead of importing any other file which contains all those Windows API functions. That's because we have included `Windows.h`, which contains all functions from the Windows API, all the common macros used by Windows programmers, and all the data types used by the various functions and subsystems.
-Let's break down the code...
+I have used `Windows.h` instead of using any other header file because `Windows.h` contains almost everything that we need for doing Windows API programming.   
+Let's now understand the code.     
+First, we have declared a struct of type `MEMORY_BASIC_INFORMATION`, which is the struct that we talked about, then we committed eight *bytes* of virtual memory which is read-only.    
+After that, we have used `VirtualQuery` function to get information about that memory region.    
+We gave it the address of the allocated memory region as our first parameter, then we gave the address of the `info` struct that will hold all the returned data from this function, then we gave it the `size of` our info struct.    
+Then, we are doing a check if the function is failed, If it's failed then the error code can be found by using the `GetLastError` function.    
+Then, we have a switch-case clause, where we are checking the value of `AllocationProtect` member of our `info` struct. This switch-case clause will check for the protection type of the virtual memory region that was specified as the first parameter.    
+The constants that are being used to compare in the switch-case clause are defined in the `Windows.h` header file that we included.   
+We are then checking the value of `State` member from our `info` struct. This switch-case clause is comparing the state of the allocated virtual memory region. Then, we are just printing information according to the statements. One thing to note is that we cannot compare the value with every type of protection type or every type of memory state, I have tried doing so but I was unsuccessful, so I am have just used the types that can be compared.    
+Then we just free the allocated memory.
 
-First, we have declared a variable of type `MEMORY_BASIC_INFORMATION`, which is the struct that we talked about, then we committed eight *bytes* of virtual memory which is read-only. After that, we used `VirtualQuery` function to get information about that memory region.
-
-We gave the address of the memory region as our first parameter, then we gave the address of the info struct that will hold all the returned data from this function, then we gave it the size of our info struct.
-
-Afterwards, we check if the function failed. If you are confused about how it is being checked, then the answer is simple, it checks if the function returned false. According to the documentation, the function returns a zero if it fails and 0 means false in C. So it's just checking if the function is returning false. If the function fails, it will first print that the function is failed and then it will print the error code of the last error by printing the error from the `GetLastError` function and then return.
-
-Then we have a switch-case clause where we are checking the value of `AllocationProtect` in our info struct. If you wonder how they are being checked with those constants which are defined nowhere, they are just constants which are already defined in `Windows.h`. Then we are checking the value of `State`, in our struct. Then we are just printing stuff. One thing to note is that we cannot compare the value with every type of protection type or every type of memory states, I have tried doing that but I was unsuccessful, so I am just adding the types that can be compared.
-
-And that all our program does, Now let's run it and check the output. This is the output:
-```cpp
+## Results #1 
+Here's the output that I get after running the example:
+```console
+$ ./vquery-example
 Protection type : READ
 Region State : Committed
 ```
 
-As expected, we had hardcoded the page protection to be read-only and the page is committed. 
-Let's make this more interesting by looking at another more cooler example. 
+The results are expected, we had hardcoded the page protection to be read-only and the page state to committed and the result by the function is precise.     
 
 ## Code Example #2
-
-So in this example, we are going to implement a functionality to get information from any memory region. This one is more fun. This is the code
-
+In this example, we are going to implement a functionality to get information from any memory region. This one is more fun. This is the code:
 ```cpp
 #include <Windows.h>
 #include <stdio.h>
