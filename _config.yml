@@ -20,7 +20,7 @@ title                    : "de engineering"
 title_separator          : "-"
 subtitle                 : "Learn things that fraustate you!" # site tagline that appears below site title in masthead
 name                     : "Mr. Rc"
-description              : "Blogs related to low level stuff, mainly focused on Vulnerability Research."
+description              : "Blogs related to low level stuff, mainly focused on Vulnerability Research and Reverse Engineering."
 url                      : # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : "de-engineer/de-engineering.github.io" # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
