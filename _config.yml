@@ -18,7 +18,7 @@ minimal_mistakes_skin    : "dark" # "air", "aqua", "contrast", "dark", "dirt", "
 locale                   : "en-IN"
 title                    : "de engineering"
 title_separator          : "-"
-subtitle                 : "Learn things that fraustate you!" # site tagline that appears below site title in masthead
+subtitle                 : "Learn things that frustrate you!" # site tagline that appears below site title in masthead
 name                     : "Mr. Rc"
 description              : "Blogs related to low level stuff, mainly focused on Vulnerability Research and Reverse Engineering."
 url                      : # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
