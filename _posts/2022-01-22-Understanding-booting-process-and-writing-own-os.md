@@ -20,7 +20,7 @@ Table of contents:
 Unless you live under a rock, you might have heard of the term _"Firmware"_ several times, if you didn't then let me introduce you to what a Firmware is.  
 The most well known example of firmwares are Basic Input/Output System (BIOS) and Unified Extensible Firmware Interface (UEFI).  
 The term itself is actually made up of two fancy words - **FIRM softWARE**. The word _"FIRM"_ means _"something that doesn't change or something that is not likely to change"_ and I know you are a smart person and you know what a software is. The word is nice and all but you are here to learn about the cool technical stuff so let me explain the techincal part of it.
-The firmware is stored inside non-volatile memory devices (devices which store sort of permanent data that doesn't change after a system restart) as instructions or data and it is the first thing that the CPU runs after the computer is powered on. Everything that we are learning in this blog post is specific to the BIOS firmware type. 
+The firmware is stored inside non-volatile memory devices (devices which store sort of permanent data that doesn't change after a system restart) as instructions or data and it is the first thing that the CPU runs after the computer is powered on. Everything that we are learning in this blog post is specific to the BIOS firmware type. Modern Operating Systems do not use BIOS, however, that doesn't mean that the knowledge in this article is of no use as concepts of BIOS are simpler to understand still relavent to learn.
 
 In order to understand the importance and the uses of a firmware, you would need to understand the boot process (_“boot”_ refers to _“Bootstrap”_) of a computer.  
 
