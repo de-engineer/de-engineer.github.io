@@ -99,6 +99,7 @@ analytics:
     tracking_id          : UA-222714509-1 
     anonymize_ip         : true # true, false (default)
 
+google_analytics: UA-222714509-1
 
 # Site Author
 author:
