@@ -1,0 +1,35 @@
+# 1. HeapCreate
+In order to create a new heap, the `HeapCreate` function is used and in order to destroy that heap, the `HeapDestroy` function is used. 
+ Processes can allocate more heaps during runtime, although most applications will never do this. 
+`HeapCreate` function is used to create the heap at the runtime. After the heap is created, we can use other functions to do things on this allocated heap. We will see that later. For now, let's look at the syntax of this function. 
+
+Here it is:
+
+```c
+HANDLE HeapCreate(
+  DWORD  flOptions,
+  SIZE_T dwInitialSize,
+  SIZE_T dwMaximumSize
+);
+```
+
+As you can see, the type of this function is `HANDLE`, `HANDLE` type is just a pointer to some memory in heap. So this means that this function will return a memory address from the heap and that's what we expect from after creating heap. 
+Now, let's have a look at the arguments.
+
+The first arguments is `flOption`. This argument is used to specify the heap allocation options.
+This are the valid parameter for this argument:
+
+[![options](https://i.ibb.co/HrdBm7R/options.png)](https://ibb.co/2jNWXqR)
+
+If you don't want to use any of these options, you can specify 0 that will not use any of these options.
+
+The second argument is `dwInitialSize`. This argument is used to specify the size of heap *in bytes*. This is the initial size of the created heap and this can be expanded more by specifying the next argument. If you specify 0 as the third argument, the function will allocate a whole page.
+
+The third and last argument is `dwMaximumSize`. This is used to specify the maximum size of heap. If this value is too big, this values will be rounded to the maximum page size of the machine.
+
+## Return Value
+
+The function returns a handle to the created heap region when it succeeds.
+The function returns a `NULL` if the function fails.
+
+Now, we have created heap. The next thing to do is to Allocate the created heap. For creating heap, we have a function from the Windows API called `HeapAlloc`. Now, let's look at this function.

@@ -4,7 +4,7 @@ author_profile: true
 date: 2022-01-26 11:33:00 +0800
 categories: [Programming, WinAPI]
 tags: [Windows Internals series, Windows API series]
-excerpt: "Introduction to Virtual Memory, Paging and APIs that allow us to play with the virtual memory!"
+excerpt: "Introduction to Virtual Memory, Paging and Windows API functions that allow us to play with the virtual memory!"
 ---
 If you have ever explored Windows Internals or just the internal workings of an Operating System or Computer, you must have heard of the term "Virtual Memory" or "Paging" somewhere because these are some of the most important concepts of an Operating System and these are the concepts which we are going to explore in this blog post. Of course, I won't be able to cover the whole concepts but I'll try to give you basic understanding of every concept I will talk about but I will link to the resources that explain each concept in deep in the [resources](#resources) section.
 
@@ -149,8 +149,8 @@ Now, we'll define a main function that will use the `VirtualAlloc` function to c
 #include <memoryapi.h>
 
 int main(){
-	int *pointer_to_memory = VirtualAlloc(NULL, 8, MEM_COMMIT, PAGE_READWRITE); // commit 8 bytes of virtual memory with read write permissions. 
-	printf("%x", pointer_to_memory); // print the pointer to the start of the region.
+    int *pointer_to_memory = VirtualAlloc(NULL, 8, MEM_COMMIT, PAGE_READWRITE); // commit 8 bytes of virtual memory with read write permissions. 
+    printf("%x", pointer_to_memory); // print the pointer to the start of the region.
   return 0;
 }
 ```
