@@ -125,7 +125,7 @@ As you can see, the return type of this function is `BOOL`, it means that it wil
 
 **dwSize**: We also know about this argument, it is used to pass the size in *bytes* of the memory region which we want to modify. Here, we will use it specify the size of the memory region that we want to free.
 
-**lpAddress**: This argument is used to specify the type which we want to use to free the memory. It may be a bit confusing to you but looking at these types and their definition will clear your confusion:     
+**dwFreeType**: This argument is used to specify the type which we want to use to free the memory. It may be a bit confusing to you but looking at these types and their definition will clear your confusion:     
 <img src="../images/virtualfree-free-types.png" alt="virtualfree() free types" width="700px">{: .align-center}
 
 ## Return value
