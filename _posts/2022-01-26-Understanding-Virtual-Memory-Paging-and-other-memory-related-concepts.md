@@ -2,7 +2,7 @@
 title: Windows API -  Exploring Virtual Memory and the Virtual Memory Management API.
 author_profile: true
 date: 2022-01-26 11:33:00 +0800
-categories: [Programming, WinAPI]
+categories: [WinAPI]
 tags: [Windows Internals series, Windows API series]
 excerpt: "Introduction to Virtual Memory, Paging and Windows API functions that allow us to play with the virtual memory!"
 ---
@@ -22,7 +22,7 @@ If you are a bit familiar with pointers or assembly, you might already know how 
 ```nasm
 0xFFFFDEADC0DE
 ```
-yeah, like that. This is an example of a virtual memory address (or simply a virtual address). These addresses don't actually point to the actual physical RAM installed on your computer, but they are basically a reference to the actual location in the physical RAM (aka physical memory address). These virtual memory address are translated (converted) into physical memory addresses by the combined workings of both the CPU and the Memory Management Unit (MMU).    
+yeah, like that. This is an example of a virtual memory address (or simply a virtual address). These addresses don't actually point to the actual physical RAM installed on your computer, but they are basically a reference to the actual location in the physical RAM (aka physical memory address). These virtual memory address are translated (converted) into physical memory addresses by the combined workings of both the MMU and the Memory Management Unit (MMU).    
 
 # Paging
 Implementation of virtual memory by the Memory Management Unit is known as paging. Windows uses two types of paging which are known as **Disc Paging** and **Demand Paging** with clustering.    
@@ -43,7 +43,7 @@ A page can be in one of the three states:
 
 # Memory Manager in Windows
 All the management of the virtual memory and virtual addresses is done by the Memory Manager, which is a part of the Windows executive (kernel component). Here are the specific tasks of the memory manager:
-- Telling the CPU how to translate a virtual memory address to a physical memory address.
+- Telling the MMU how to translate a virtual memory address to a physical memory address.
 - Performing paging.
 - Allocation, Reservation, Freeing of virtual memory.
 - Handling page faults.
@@ -108,7 +108,7 @@ If the function succeeds, it will return the starting address of the memory regi
 # 2. VirtualFree
 This function is basically used to free the virtual memory that was allocated using `VirtualAlloc`.
 
-## Syntax
+## Function signature
 This is the syntax of `VirtualFree`:
 
 ```c
@@ -134,7 +134,7 @@ If the function does its job successfully, it returns a nonzero value. If the fu
 # Examples
 As we have looked into all the explanation, now it's time to write some code and clear the doubts.
 
-## Example #1 - VirtualAlloc
+## Example #1
 Let's start with taking example of `VirtualAlloc`. We will write some code which will commit 8 bytes of virtual memory.    
 First we'll start by including the needed libraries:
 ```c
@@ -189,7 +189,7 @@ The base address of allocated memory is: 61fe18
 Cool, right?    
 We have just used the `VirtualAlloc` function to allocate 8 bytes of virtual memory and we freed it by ourselves. Now let's add some data to the allocated virtual memory and print it. 
 
-## Example #2 - VirtualAlloc
+## Example #2
 Now let's save some data inside the virtual memory that we allocated:
 ```c
 #include <stdio.h>

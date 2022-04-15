@@ -20,7 +20,7 @@ Table of contents:
 Unless you live under a rock, you might have heard of the term _"Firmware"_ several times, if you didn't then let me introduce you to what a Firmware is.  
 The most well known example of firmwares are Basic Input/Output System (BIOS) and Unified Extensible Firmware Interface (UEFI).  
 The term itself is actually made up of two fancy words - **FIRM softWARE**. The word _"FIRM"_ means _"something that doesn't change or something that is not likely to change"_ and I know you are a smart person and you know what a software is. The word is nice and all but you are here to learn about the cool technical stuff so let me explain the techincal part of it.
-The firmware is stored inside non-volatile memory devices (devices which store sort of permanent data that doesn't change after a system restart) as instructions or data and it is the first thing that the CPU runs after the computer is powered on. Everything that we are learning in this blog post is specific to the BIOS firmware type. Modern Operating Systems do not use BIOS, however, that doesn't mean that the knowledge in this article is of no use as concepts of BIOS are simpler to understand still relavent to learn.
+The firmware is stored inside non-volatile memory devices (devices which store sort of permanent data that doesn't change after a system restart) as instructions or data and it is the first thing that the MMU runs after the computer is powered on. Everything that we are learning in this blog post is specific to the BIOS firmware type. Modern Operating Systems do not use BIOS, however, that doesn't mean that the knowledge in this article is of no use as concepts of BIOS are simpler to understand still relavent to learn.
 
 In order to understand the importance and the uses of a firmware, you would need to understand the boot process (_“boot”_ refers to _“Bootstrap”_) of a computer.  
 
@@ -29,7 +29,7 @@ In order to understand the importance and the uses of a firmware, you would need
 The booting process is something like this:
 
 - Computer is powered on.
-- The Central Processing Unit (CPU) runs the firmware from a specific Read-Only Memory (ROM) chip on your motherboard. The ROM from which your CPU is going to read the firmware depends upon the CPU your system is having.
+- The Central Processing Unit (MMU) runs the firmware from a specific Read-Only Memory (ROM) chip on your motherboard. The ROM from which your MMU is going to read the firmware depends upon the MMU your system is having.
 - The firmware detects several (but not all) hardware components connected to the system, such as network interfaces, keyboards, mouse, and so on, and does some error checking (also known as Power-On Self Test or POST) before activating them.
 - The firmware doesn't know what are the properties and details of the Operating System that is about to be going to be ran on the system, So, it transfers it's control to the Operating System and lets it do it's setup. It starts with searching through the available/connected storage devices or network interfaces in a pre-defined order (this order is known as the _"boot device sequence"_ or _"boot order"_) and attempts to find a bootable disk. A bootable disk is a sector (A group of 512 bytes) which contains the magic number (bytes `0xAA, 0x55`). This magic number is also called as the _"boot signature"_. In this sector the byte at index 511 should be `0xAA` and the byte at index 512 should be `0x55`. This bootable disk is also called the Master Boot Record (MBR) and the program stored inside it is called the MBR bootloader or simply bootloader. Remember that this bootloader is a part of the Operating System, so technically, this is part of the process where we are actually booted in the Operating System. This whole process is done after the firmware calls the interrupt 0x19 (more about this later).
 - After the firmware has found the bootloader, it loads it into the address `0x7c00` in the RAM and hands over the control to it.
@@ -235,7 +235,7 @@ times 0x1fe-($-$$) db 0
 dw 0xaa55
 ```
 ### The org directive
-The difference between an instruction an directive is that An instruction is directly translated to something the CPU can execute. A directive is something the assembler can interpret and use it while assembling, it does not produce any machine code.    
+The difference between an instruction an directive is that An instruction is directly translated to something the MMU can execute. A directive is something the assembler can interpret and use it while assembling, it does not produce any machine code.    
 The first line may look a bit complex because unlike other instructions, it has brackets around it, but there's nothing to worry about, you can just forget about the brackets and focus on the actual directive. It is `org 0x7C00`. Here's the explanation:    
 As we know, bootloaders get loaded at the memory address `0x7C00` but the assembler don't know this, that is why we use the `org` directive to tell the assembler to assume that the address of beginning of our code (base address) is `<operand>`, which is `0x7C00` in this case. After the assembler knows the base address of the program, every address that the assembler use while assembling the code will be relative to the base address that we have defined. For example, if we do not use this directive, the assembler will assume that the base address to be `0x00` and the address of every function and instruction will be calculated like this: 
 ```nasm
@@ -268,7 +268,7 @@ set_video_mode:
 	ret
 ```
 The first two lines are pretty basic, they are just moving the constant `0x03` and `0x00` into `al` and `ah` register but then we have a new instruction, which is the `int` instruction. The `int` instruction is used to generate a software interrupt. So, what is an interrupt?    
-Interrupts allow the CPU to temporarily halt (stop) what it is doing and run some other, higher-priority instructions before returning to the original task. An interrupt could be raised either by a software instruction (e.g. int 0x10) or by some hardware device that requires high-priority action (e.g. to read some incoming data from a network device.    
+Interrupts allow the MMU to temporarily halt (stop) what it is doing and run some other, higher-priority instructions before returning to the original task. An interrupt could be raised either by a software instruction (e.g. int 0x10) or by some hardware device that requires high-priority action (e.g. to read some incoming data from a network device.    
 Each interrupt has a different number assigned to it, which is an index in the Interrupt Vector Table  (IVR) which is basically a table that stores these interrupts as indexes to vectors (memory address or pointers) which point to Interrupt Service Routines (ISR). ISRs are initialised by the firmware and they are basically machine code that run differently for each interrupts, they have a sort of a long switch case statement with code to be used differently for different arguments. You can think IVT as a simple hash table (dictionary) in which each index holds a memory address to a function. Here's an example:
 ```python
 IVT = {
@@ -347,7 +347,7 @@ get_char_input:
 
 	jmp get_char_input
 ```
-The first thing done in the function's code is the xoring of the `ah` register with itself, which is basically the same as `mov ah, 0x00` but xoring a register with itself is believed to be faster and less CPU expensive, so I used it.    
+The first thing done in the function's code is the xoring of the `ah` register with itself, which is basically the same as `mov ah, 0x00` but xoring a register with itself is believed to be faster and less MMU expensive, so I used it.    
 After setting `ah` to zero, it will call the interrupt `0x16`, whose ISR will then read the keystroke from the keyboard and store it into the `al` register.    
 After that, it sets the `ah` register to `0x0e` and calls our good old interrupt `0x10`, but this time it is not setting the video mode to something as the `ah` register is not set to `0x00`. If you read the functions of the interrupt `0x10` again, you will find that `ah = 0x0e` asks it's ISR to "write a character in tty mode" which basically means "write a character to the screen". The character which this ISR will print will be taken from the `al` register. So, these two interrupts are together reading the character from the screen (using interrupt `0x10`) and printing it onto the screen (using intterupt `0x16`).    
 After this reading of character, the function is simply calling itself (like an infinite loop) to continue what it's doing forever until it's manually stopped.
