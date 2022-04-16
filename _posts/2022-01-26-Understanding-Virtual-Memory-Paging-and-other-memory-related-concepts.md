@@ -16,13 +16,13 @@ Table of contents:
 
 # Virtual Memory
 64 bit systems are capable of having addresses upto 64 bits in size but they only use 48 bits for addressing out of their total bits. Why?    
-Because, if all 64 bits are allowed, the system will be able to address up to 16 Exabyte (EB) of memory (1 EB = 1000000 Terabytes) and of course, none of the system can use or need that much memory right now and another reason behind this is the memory manager can't manage this much memory at the same time as 16 EB is a lot of memory. This is why only 48 bits of addressing is allowed. 48 bits can address upto 256 TB of memory, which is still a lot.    
-We generally use the term "memory" (in context of computers) to refer to the RAM or some data stored in the RAM but behind the scenes, there is a lot going on that actually makes memory a thing and one of the many component behind this us virtual memory.      
+Because, if all 64 bits are allowed, the system will be able to address up to 16 Exabyte (EB) of memory (1 EB = 1000000 Terabytes) and of course, none of the system today can use or need that much memory right now and another reason behind this is the memory manager can't manage this much memory at the same time as 16 EB is a lot of memory. This is why only 48 bits of addressing is allowed. 48 bits can address up to 256 TB of memory, which is still a lot.      
+We generally use the term "memory" (in context of computers) to refer to the RAM or some data stored in the RAM but behind the scenes, there is a lot going on that actually makes memory a thing and one of the many component behind this is virtual memory.      
 If you are a bit familiar with pointers or assembly, you might already know how does a memory address look like. It's like this:
 ```nasm
 0xFFFFDEADC0DE
 ```
-yeah, like that. This is an example of a virtual memory address (or simply a virtual address). These addresses don't actually point to the actual physical RAM installed on your computer, but they are basically a reference to the actual location in the physical RAM (aka physical memory address). These virtual memory address are translated (converted) into physical memory addresses by the combined workings of both the MMU and the Memory Management Unit (MMU).    
+yeah, like that. This is an example of a virtual memory address (or simply a virtual address). These virtual memory addresses don't actually point to a place in the physical RAM installed on your computer, but they are basically a reference to the them. The addresses that point to memory in the Physical RAM are called physical memory address. Virtual memory address are translated (converted) into physical memory addresses by the combined workings of both the CPU and the Memory Manager (which is a part of Windows itself).   
 
 # Paging
 Implementation of virtual memory by the Memory Management Unit is known as paging. Windows uses two types of paging which are known as **Disc Paging** and **Demand Paging** with clustering.    
@@ -79,7 +79,7 @@ LPVOID VirtualAlloc(
 #### Arguments
 The return type of this function is `LPVOID`, which is basically a pointer to a void object. `LPVOID` is defined as `typedef void* LPVOID` in the `Windef.h`. In simple words, `LPVOID` is an alias for `void *`. `LP` in `LPVOID` stands for long pointer.    
 
-**lpAddress**: This argument is used to specify the starting address of the memory region (page) to allocate. This address is obtained from the return value of the previous call to this function. If we don't know where to allocate memory (as if we have not called this function previously), we can simply specify `NULL` and the system will decide where to allocate the memory. If this address is specified, the next argument (`dwSize`) will be ignored. If the address specified is from a memory region that is inaccessible or if it's an invalid address to allocate memory from, the function will fail with `ERROR_INVALID_ADDRESS` error.
+**lpAddress**: This argument is used to specify the starting address of the memory region (page) to allocate. This address can be provided either from the return value of the previous call to this function or it can be specified as an arbitrary address but if there is memory already allocated at this address, then the Memory manager will decide where it should allocate the memory. If we don't know where to allocate memory (as if we have not called this function previously), we can simply specify `NULL` and the system will decide where to allocate the memory. If the address specified is from a memory region that is inaccessible or if it's an invalid address to allocate memory from, the function will fail with `ERROR_INVALID_ADDRESS` error.
 
 **dwSize**: This argument is used to specify the size of the memory region that we want to allocate in *bytes*. If the `lpAddress` argument was specified as `NULL` then this value will be rounded up to the next page boundary.
 
@@ -142,13 +142,13 @@ First we'll start by including the needed libraries:
 #include <memoryapi.h>
 ```
 
-Now, we'll define a main function that will use the `VirtualAlloc` function to commit 8 bytes of Virtual Memory. We will specify the `lpAddress` argument as `NULL`, so that the system will determine from where to allocate the memory. Here is how the code looks like:
+Now, we'll define a main function that will use the `VirtualAlloc` function to commit 8 bytes of Virtual Memory which will be rounded up to 4KB as it is the nearest page boundary to 8 bytes. We will specify the `lpAddress` argument as `NULL`, so that the system will determine from where to allocate the memory. Here is how the code looks like:
 ```c
 #include <stdio.h>
 #include <memoryapi.h>
 
 int main(){
-    int *pointer_to_memory = VirtualAlloc(NULL, 8, MEM_COMMIT, PAGE_READWRITE); // commit 8 bytes of virtual memory with read write permissions. 
+    int *pointer_to_memory = VirtualAlloc(NULL, 8, MEM_COMMIT, PAGE_READWRITE); // commit 4KB of virtual memory (8 byte is rounded up to 4KB) with read write permissions 
     printf("%x", pointer_to_memory); // print the pointer to the start of the region.
   return 0;
 }
@@ -178,7 +178,7 @@ The we are printing virtual memory address returned by `VirtualAlloc` function a
 In the end, we are decommitting the memory region that we allocated by using the `VirtualFree` function.    
 The first parameter is the base address of the memory region that we allocated.    
 The second parameter is the size of memory region in bytes, we specified `8` while allocating it so the we'll specify `8` while deallocating it.   
-Then we have specified the type of deallocation. As we are using `MEM_DECOMMIT`, the memory region will be reserved after it gets decommitted, which means that any other function will not be able to use it after you decommit it until you use `VirtualFree` function again to release the memory region.
+Then we have specified the type of deallocation. As we are using `MEM_DECOMMIT`, the memory region will be reserved after it gets decommitted, which means that any other function will not be able to use it after you decommit it until you use `VirtualFree` function again with `MEM_RELEASE` to release the memory region.
 
 ### Results #1
 As we are almost done with everything, let's compile and run the code. I suggest you to write the code by yourself and see the result. This is the that result that I got after I ran it:    
@@ -198,14 +198,14 @@ Now let's save some data inside the virtual memory that we allocated:
 int main(){
     int *pointer_to_memory = VirtualAlloc(NULL, 8, MEM_COMMIT, PAGE_READWRITE); // commit 8 bytes of virtual memory with read write permissions. 
     printf("The base address of allocated memory is: %x", pointer_to_memory); // print the pointer to the start of the region.
-    memmove(pointer_to_memory, (const void*)"1337", 4); // move "1337" string into the allocated memory.
+    memmove(pointer_to_memory, (const void*)"1337", 5); // move "1337" string into the allocated memory.
     printf("The data which is stored in the memory is %s", pointer_to_memory); // print the data from the memory.
     VirtualFree(pointer_to_memory, 8, MEM_DECOMMIT); // decommit the memory region.
     return 0;
 }
 ```
 
-The `memmove` function is used to move data from one destination to other. The first argument to this function is the destination memory address where you want to move the data and the second argument is the data that will be moved and the last and third argument is the size of data. Here, we have copied "1337" to the memory our virtually allocated memory. If you're confused about the type conversion, it's used because `memmove` takes second argument as a `const void*` and we can't directly pass `char` array to it.
+The `memmove` function is used to move data from one destination to other. The first argument to this function is the destination memory address where you want to move the data and the second argument is the data that will be moved and the last and third argument is the size of data, which in this case is 5 (length of the string + null byte). Here, we have copied "1337" to the memory our virtually allocated memory. If you're confused about the type conversion, it's used because `memmove` takes second argument as a `const void*` and we can't directly pass `char` array to it.
 
 ### Results #2
 Let's compile and run the code. This is the output that we'll get:
@@ -218,7 +218,7 @@ The data which is stored in the memory is 1337
 looks even more cool :D!    
 
 # Summary
-We learnt a lot about virtual memory in this post, we first looked at how it is basically "virtual" memory which points to "physical" memory then we learnt about paging on windows and different paging schemes that Windows' memory manager uses then we got to know that a page is basically a memory region of 4KB, then we had look at two memory management related functions which allow us to modify virtual memory by allowing us to allocate and free it. I hope you enjoyed the blog and it wasn't boring, any suggestions and constructive criticism is welcome!    
+We learned a lot about virtual memory in this post, we first looked at how it is basically "virtual" memory which points to "physical" memory then we learned about paging on windows and different paging schemes that Windows' memory manager uses then we got to know that a page is basically a memory region of 4KB, then we had look at two memory management related functions which allow us to modify virtual memory by allowing us to allocate and free it. I hope you enjoyed the blog and it wasn't boring, any suggestions and constructive criticism is welcome!    
 Thank you for reading!
 
 # Resources

@@ -21,7 +21,7 @@ When a virtual memory address gets translated, it goes through several different
 - Page Directory Table (PDT)
 - Page Table (PT)    
 
-Each of these tables contain indexes that point to the start of the next paging structure. Each of these paging structures have 512 entries. These indexes are called Page Frame Numbers (PFN) and the entries themselves are called as PxE, where x is the name of the table and E means entry, so entries inside the PML4 will be called PML4E (x = ML4), for Page Tables it will be PTE and so on.    
+Each of these tables contain indexes that point to the start of the next paging structure. Each of these paging structures have 512 entries. These indexes are called Page Frame Numbers (PFN) and the entries themselves are called as PxE, where x is the name of the table and E means entry, so entries inside the PML4 will be called PML4E (x = ML4), for Page Tables it will be PTE and so on.     
 This can be visually understood by looking at this diagram:
 
 <img src="../images/virtual_memory_translation_on_x64.png" alt="Virtual Memory Translation on x64 Windows" width="800"/>{: .align-center}    
@@ -177,7 +177,7 @@ int main()
         default:
             break;
     }
-    VirtualFree(vm, 8, MEM_DECOMMIT); // free the allocated memory.
+    VirtualFree(vm, 8, MEM_RELEASE); // free the allocated memory.
     return 0;
 }
 ```

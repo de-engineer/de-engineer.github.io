@@ -31,7 +31,7 @@ The booting process is something like this:
 - Computer is powered on.
 - The Central Processing Unit (CPU) runs the firmware from a specific Read-Only Memory (ROM) chip on your motherboard. The ROM from which your CPU is going to read the firmware depends upon the CPU your system is having.
 - The firmware detects several (but not all) hardware components connected to the system, such as network interfaces, keyboards, mouse, and so on, and does some error checking (also known as Power-On Self Test or POST) before activating them.
-- The firmware doesn't know what are the properties and details of the Operating System that is about to be going to be ran on the system, So, it transfers it's control to the Operating System and lets it do it's setup. It starts with searching through the available/connected storage devices or network interfaces in a pre-defined order (this order is known as the _"boot device sequence"_ or _"boot order"_) and attempts to find a bootable disk. A bootable disk is a sector (A group of 512 bytes) which contains the magic number (bytes `0xAA, 0x55`). This magic number is also called as the _"boot signature"_. In this sector the byte at index 511 should be `0xAA` and the byte at index 512 should be `0x55`. This bootable disk is also called the Master Boot Record (MBR) and the program stored inside it is called the MBR bootloader or simply bootloader. Remember that this bootloader is a part of the Operating System, so technically, this is part of the process where we are actually booted in the Operating System. This whole process is done after the firmware calls the interrupt 0x19 (more about this later).
+- The firmware doesn't know what are the properties and details of the Operating System that is about to be going to be ran on the system, So, it transfers it's control to the Operating System and lets it do it's setup. It starts with searching through the available/connected storage devices or network interfaces in a pre-defined order (this order is known as the _"boot device sequence"_ or _"boot order"_) and attempts to find a bootable disk. A bootable disk is a disk whose first sector (a subdivision of a HDD which can hold 512 bytes of user-accessible data) contains the magic number `0xAA55` (big-endian). This magic number is also called as the _"boot signature"_. In this sector the byte at index 511 should be `0xAA` and the byte at index 512 should be `0x55`. This first sector is called the Master Boot Record (MBR) and the program stored inside it is called the MBR bootloader or simply bootloader. Remember that this bootloader is a part of the Operating System, so technically, this is part of the process where we are actually booted in the Operating System. This whole process is done after the firmware calls the interrupt 0x19 (more about this later).
 - After the firmware has found the bootloader, it loads it into the address `0x7c00` in the RAM and hands over the control to it.
 - Now, the bootloader can do whatever it is programmed to do, it may print a nihilist quote and tell you that your life has no meaning or it may just do nothing if it is programmed that way. Jokes aside, while it can be programmed to do anything, the main work it is supposed to be doing is performing several tasks that sets up the environment for the loading of next part (the kernel) of the OS. After performing some tasks like the initialisation of some registers, tables and so on. It reads the kernel from the disk and loads it somewhere in the RAM and handles over the control to it. 
 - Now, the kernel has the control over the system. Just like a bootloader, there is no pre-defined tasks for a kernel. Whatever it will do entirely depends upon what it has been programmed to do. For example, this can be seen in the Linux and Windows kernel, they are entirely different and what they will do is too entirely different but they will eventually start the User Interface and allow the user to have the control of the system. If you find this complex, here's an example - Just like everyone in your company does different stuff after they wake up - they may reply drink a cup of chai, they may go for a walk or do anything they want but their end goal is to reach the office on time and start working, a kernel too has the end goal of successfully loading the easy-to-use User Interface part of the OS to the user. Note that this is not the only work of the kernel in the OS, the kernel is an essential part of an OS and also has a lot to do after it has served you the nice UI.
@@ -223,7 +223,7 @@ set_video_mode:
 	ret
 
 get_char_input:
-	xor ah, ah
+	xor ah, ah 		; same as mov ah, 0x00
 	int 0x16
 
 	mov ah, 0x0e
@@ -256,7 +256,7 @@ In order to understand this, we first need to look at the memory layout of the s
 <img src="../images/boot-memory-layout.png" alt="Memory layout of the system while booting" height="600px" width="400px" >{: .align-center} 
 **Memory layout of the system while booting.**
 {: .text-center}
-As you can see, the memory address that we are setting the base pointer is in the free memory that is after the memory address where our bootloader will be loaded (`0x7e00`) and before the other section of memory which starts at `0x9cf00`. We have set it to `0xffff` because if we had set it anywhere else (in some non-free memory) then it could possibly overwrite the other data that is around it as the stack increases it's size whenever data is pushed into it.    
+As you can see, the memory address that we are setting the base pointer is in the free memory that is after the memory address where our bootloader will be loaded (`0x7e00`) and before the other section of memory which starts at `0x9cf00`. We have set it to `0xffff` because if we had set it anywhere else (in some non-free memory) then it could possibly overwrite the other data that is around it as the stack increases it's size whenever data is pushed into it. Note that the address `0xffff` is arbitrary and you can use any address from the free space, just make sure that the address that you are choosing is not very closer to the boundaries of other regions inside memory because when you will put data inside your stack, it may expand (stack grows downwards) and overwrite the data inside those other regions.    
 
 ### Interrupts.
 The next line of code after the setting up of registers is of a `call` instruction which is calling the function `set_video_mode`. Here's the code of the function: 
@@ -339,7 +339,7 @@ The interrupt `0x16` is used for basic keyboard related function. These are the 
     
 ```nasm
 get_char_input:
-	xor ah, ah
+	xor ah, ah		; same as mov ah, 0x00
 	int 0x16
 
 	mov ah, 0x0e
