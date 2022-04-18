@@ -198,7 +198,7 @@ Now let's save some data inside the virtual memory that we allocated:
 int main(){
     int *pointer_to_memory = VirtualAlloc(NULL, 8, MEM_COMMIT, PAGE_READWRITE); // commit 8 bytes of virtual memory with read write permissions. 
     printf("The base address of allocated memory is: %x", pointer_to_memory); // print the pointer to the start of the region.
-    memmove(pointer_to_memory, (const void*)"1337", 5); // move "1337" string into the allocated memory.
+    memmove(pointer_to_memory, (const void*)"1337", 4); // move "1337" string into the allocated memory.
     printf("The data which is stored in the memory is %s", pointer_to_memory); // print the data from the memory.
     VirtualFree(pointer_to_memory, 8, MEM_DECOMMIT); // decommit the memory region.
     return 0;
