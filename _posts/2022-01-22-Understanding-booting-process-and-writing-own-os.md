@@ -6,7 +6,7 @@ tags: [Operating System Internals]
 excerpt: "There are a lot of things that happen under the hood when we start a computer, we will be exploring those as well as trying to a small part of an OS." 
 ---
 
-In this post, I am going to teach you how can you write your own Operating System. Although, it won’t be a fully-fleged Operating system (like the one you are using right now to read this post), but it will be a part of an Operating System that would be able to boot and it will give you a brief if not full understanding of the booting process of an Operating System. If you want to take this post seriously, I suggest you to take notes as there is a lot of information combined in this single post and can be uncomfortable to grasp at the same time.    
+In this post, we are going to learn how can we write our own Operating System. Although, it won’t be a fully-fleged Operating system (like the one you are using right now to read this post), but it will be a part of an Operating System that would be able to boot and it will give you a brief if not full understanding of the booting process of an Operating System. If you want to take this post seriously, I suggest you to take notes as there is a lot of information combined in this single post and can be uncomfortable to grasp at the same time.    
 If you find something difficult to understand from my explanation, you can always check the [resources](#resources) section to get a link to some alternative explanation of that topic.     
 I would start this post by introducing you to some important components of the booting process of an Computer.
 

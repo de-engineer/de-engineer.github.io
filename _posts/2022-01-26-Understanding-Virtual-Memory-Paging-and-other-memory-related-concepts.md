@@ -1,5 +1,5 @@
 ---
-title: Windows API -  Exploring Virtual Memory and the Virtual Memory Management API.
+title: Exploring Virtual Memory and the Virtual Memory Management API.
 author_profile: true
 date: 2022-01-26 11:33:00 +0800
 categories: [WinAPI]
