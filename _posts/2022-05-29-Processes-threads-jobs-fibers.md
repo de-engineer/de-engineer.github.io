@@ -261,7 +261,7 @@ This structure can be found [here](https://gist.github.com/HACKE-RC/687fdae74f80
 **ETHREAD structure**: The `ETHREAD` structure (Executive Thread) is the kernel representation of the thread object. Similar to `EPROCESS`, this structure also contains every possible bit of information about a thread, such as a pointer to the PEB, LastErrorValue, if this thread is the initial thread (main thread) of the process or not, etc. This structure is also not documented by Microsoft.    
 This structure can be found [here](https://gist.github.com/HACKE-RC/25cceb6d5eded8c447381f2b9eda0068)  
 
-**KTHREAD structure**: The `KTHREAD` data structure (Kernel Process) is also one of the important data structure inside `ETHREAD` data structure. It includes information such as the pointer to the kernel stack, a lot of information about it's scheduling (when and for how long this thread will run on the CPU), pointer to TEB, how much time the thread has spent in the user-mode, etc. This structure is also not documented by Microsoft.    
+**KTHREAD structure**: The `KTHREAD` data structure (Kernel Thread) is also one of the important data structure inside `ETHREAD` data structure. It includes information such as the pointer to the kernel stack, a lot of information about it's scheduling (when and for how long this thread will run on the CPU), pointer to TEB, how much time the thread has spent in the user-mode, etc. This structure is also not documented by Microsoft.    
 This structure can be found [here](https://gist.github.com/HACKE-RC/7d5f031abf50cc9cfcbeb8dc0a5f3619)  
     
 This diagram shows the components of a process:    
