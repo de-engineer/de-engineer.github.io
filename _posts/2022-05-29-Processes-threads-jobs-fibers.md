@@ -15,7 +15,6 @@ Table of contents:
 
 # Processes
 Many people assume that a program and a process are the same. However, a **process** is not same as a **program**. A **program** is simply a file containing code. On the other hand, a **process** is a container of threads and various resources that are required for the threads inside the process to execute.  
-A process is a kernel object.    
 
 ## Process resources
 The resources that are required to run a process might differ for each process according to it's need but these are the fundamental components that every (almost) process has:    
