@@ -6,7 +6,7 @@ tags: [Windows API Series, Windows Internals Series]
 excerpt: "This blog post covers a brief overview of Processes, Threads, Fibers, Jobs and their components on Windows and how the Windows API can be used to work with them."
 ---
 
-Learning how processes and threads work is a crucial part of understanding any Operating System as they are the building block on top of which almost all of the user-mode mechanisms work. Additionally, Windows offers us an elegant API that enables us to interact with them. Unsurprisingly enough, these topics can be a bit complicated to understand since Microsoft does not has a clear documentation of them and there are not a lot of resources that cover these topics clearly. Windows also provides us the fiber and job APIs which are built on top of the process and thread APIs to allow the developers to manage processes and threads "easily".  
+Learning how processes and threads work is a crucial part of understanding any Operating System as they are the building block on top of which almost all of the user-mode mechanisms work. Additionally, Windows offers us an elegant API that enables us to interact with them. Unsurprisingly enough, these topics can be a bit complicated to understand since Microsoft does provide a clear documentation of them and there are not a lot of resources that cover these topics clearly. Windows also provides us the fiber and job APIs which are built on top of the process and thread APIs to allow the developers to manage processes and threads "easily".  
 
 Table of contents:
 
