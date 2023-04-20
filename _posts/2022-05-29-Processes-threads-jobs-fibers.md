@@ -6,7 +6,8 @@ tags: [Windows API Series, Windows Internals Series]
 excerpt: "This blog post covers a brief overview of Processes, Threads, Fibers, Jobs and their components on Windows and how the Windows API can be used to work with them."
 ---
 
-Learning how processes and threads work is a crucial part of understanding any Operating System as they are the building block on top of which almost all of the user-mode mechanisms work. Additionally, Windows offers us an elegant API that enables us to interact with them. Unsurprisingly enough, these topics can be a bit complicated to understand since Microsoft does provide a clear documentation of them and there are not a lot of resources that cover these topics clearly. Windows also provides us the fiber and job APIs which are built on top of the process and thread APIs to allow the developers to manage processes and threads "easily".  
+Learning how processes and threads work is a crucial part of understanding any Operating System as they are the building block on top of which almost all of the user-mode mechanisms work. Additionally, Windows offers us an elegant API that enables us to interact with them. Unsurprisingly enough, these topics can be a bit complicated to understand since Microsoft does not provide a clear documentation of them and there are not a lot of resources that cover these topics clearly. Windows also provides us the fiber and job APIs which are built on top of the process and thread APIs to allow the developers to manage processes and threads "easily".  
+
 
 Table of contents:
 
@@ -14,8 +15,7 @@ Table of contents:
 {:toc}
 
 # Processes
-Many people assume that a program and a process are the same. However, a **process** is not same as a **program**. A **program** is simply a file containing code. On the other hand, a **process** is a container of threads and various resources that are required for the threads inside the process to execute.  
-
+Many people assume that a program and a process are the same. However, a **process** is not same as a **program**. A **program** is simply a file containing code. On the other hand, a **process** is a container of threads and various resources that are required for the threads inside the process to execute.    
 ## Process resources
 The resources that are required to run a process might differ for each process according to it's need but these are the fundamental components that every (almost) process has:    
 **Process Identifier**: Process identifier (aka PID or process ID) is a unique identifier for each process on the system. While processes with same name can exist on the system, process with same process IDs can not.

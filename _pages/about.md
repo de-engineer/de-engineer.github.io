@@ -2,5 +2,11 @@
 permalink: '/about'
 ---
 <br>
-I like learning and writing about Reverse Engineering, Exploit Development, overall Vulnerability Research. Member <a href='https://un-devs.github.io'>@undevs</a>. I play CTFs with <a href='https://www.thehackerscrew.info/'>thethehackerscrew</a>.
+I like learning and writing about Reverse Engineering, Exploit Development, overall Vulnerability Research.
+<br>
 Discord: Mr. Rc#9342
+<br>
+<br>
+<br>
+---
+Learn Reverse Engineering, Malware Analysis, Exploit Development and much more at: https://guidedhacking.com/
