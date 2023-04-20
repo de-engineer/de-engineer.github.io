@@ -8,5 +8,4 @@ Discord: Mr. Rc#9342
 <br>
 <br>
 <br>
----
-Learn Reverse Engineering, Malware Analysis, Exploit Development and much more at: https://guidedhacking.com/
+Learn Reverse Engineering, Malware Analysis, Exploit Development and much more at: <a href="https://guidedhacking.com"> GuidedHacking</a>
