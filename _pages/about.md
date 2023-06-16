@@ -4,7 +4,7 @@ permalink: '/about'
 <br>
 I like learning and writing about Reverse Engineering, Exploit Development, overall Vulnerability Research.
 <br>
-Discord: Mr. Rc#9342
+Discord: rc.hq
 <br>
 <br>
 <br>
