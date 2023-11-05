@@ -3,9 +3,7 @@ title: "Understanding SMT solvers: An Introduction to Z3"
 date: 2022-08-03 10:30:00 +0530
 categories: [WinAPI]
 tags: [Windows API Series, Windows Internals Series]
-excerpt: "This blog post covers a brief overview of Processes, Threads, Fibers, Jobs and their components on Windows and how the Windows API can be used to work with them."
-# toc: true
-# toc_sticky: true
+excerpt: "A short overview of SMT solvers with an introduction to Z3 with examples."
 ---
 Satisfiability Modulo Theories (SMT) solvers are one of the most interesting topics to learn about in Computer Science. They can reduce a big chunk of time that would otherwise be spent on statically or dynamically analyzing the binary.
 While SMT solvers have their limits, when they work, they work like magic. You might already have heard of or seen someone use a SMT solver like Z3 for solving CTF challenges or Program Analysis. By the end of this blog, you'll have a good grasp of all the required knowledge to get started with SMT solvers and use Z3.
