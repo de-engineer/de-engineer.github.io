@@ -10,7 +10,7 @@ While SMT solvers have their limits, when they work, they work like magic. You m
 
 This post does not use any complicated mathematics to explain these solvers and will deal with only required theory and examples to get started. To go deep into SMT solvers and Program Analysis check out #resources.
 
-**Info: If you want to watch a video version (covers 50% of this blog): [Watch Here](https://www.youtube.com/watch?v=EacYNe7moSs)**
+**Info: If you want to watch a video version, which I made for GuidedHacking (covers 50% of this blog): [Watch Here](https://www.youtube.com/watch?v=EacYNe7moSs)**
 {: .notice--info}
 
 
