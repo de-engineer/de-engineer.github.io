@@ -2,7 +2,7 @@
 permalink: '/about'
 ---
 <br>
-I like learning and writing about Reverse Engineering, Exploit Development, overall Vulnerability Research.
+I like learning and writing about Reverse Engineering, Exploit Development, overall Vulnerability Research. Personal site <a href="https://rcx86.me">https://rcx86.me</a>
 <br>
 Discord: rc.hq
 <br>
